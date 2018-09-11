@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ namespace HelloConsole
 {
     class Program
     {
-        static void Main(string[] args) //array of strings with arguments
+        static void Main(string[] info) //array of strings with arguments
         {
             // The code provided will print ‘Hello World’ to the console.
             // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
@@ -16,61 +17,84 @@ namespace HelloConsole
             //initializes nameStr as an empty String instead
             // string nameString; 
             //it's important to initialize a variable
-            string nameStr = String.Empty;
-            string ageStr = String.Empty;
-            switch (args.Length)
-            {
 
+            string nameStr = ConfigurationManager.AppSettings["name"];
+            string ageStr = ConfigurationManager.AppSettings["age"];
+
+            int numToAdd = 0;
+            if (!string.IsNullOrEmpty(nameStr))
+                ++numToAdd;
+            if (!string.IsNullOrEmpty(ageStr))
+                ++numToAdd;
+
+
+
+
+            string[] information = new string[numToAdd];
+            int numAdded = 0;
+            if (!string.IsNullOrEmpty(nameStr))
+                information[numAdded++] = nameStr;
+            if (!string.IsNullOrEmpty(ageStr))
+                information[numAdded++] = ageStr;
+
+
+            switch (information.Length)
+            {
                 case 0:
                     {
                         nameStr = PromptName(); //prompts name and age, if there's nothing in there
                         ageStr = PromptAge();//and once that's done, it breaks and comes out
                         break;
                     }
+
                 case 1:
                     {
-                        if (IsNum(args[0])) //is args[0] a number?
+                        if (IsNum(information[0])) //is args[0] a number?
                         {
                             nameStr = PromptName(); //if it's a number then, prompt for the name and take the 
                             //the first input as the age
-                            ageStr = args[0];
+                            ageStr = information[0];
                         }
                         else
                         {
-                            nameStr = args[0]; //if not a number, prompt for age and take the first input as a name
+                            nameStr = information[0]; //if not a number, prompt for age and take the first input as a name
                             ageStr = PromptAge();
+
                         }
 
                         break;
+
                     }
+
                 case 2:
                     {
-                        if (IsNum(args[0]) && IsNum(args[1])) //if both 0 and 1 are numbers, then
-                            //the first one can be in the name, and the second can be the age.
+                        if (IsNum(information[0]) && IsNum(information[1])) //if both 0 and 1 are numbers, then
+                                                                            //the first one can be in the name, and the second can be the age.
                         {
-                            nameStr = args[0];
-                            ageStr = args[1];
+                            nameStr = information[0];
+                            ageStr = information[1];
                         }
                         else
-                        if (IsNum(args[0])) //if both are not numbers, then, check if the first arg is a number
+                        if (IsNum(information[0])) //if both are not numbers, then, check if the first arg is a number
                         {
-                            ageStr = args[0]; //if first input is a number, then assign it to ageStr, and the second one
+                            ageStr = information[0]; //if first input is a number, then assign it to ageStr, and the second one
                             //can be the name
-                            nameStr = args[1];
+                            nameStr = information[1];
                         }
                         else
-                            if (IsNum(args[1])) //if the second one is the number
+                            if (IsNum(information[1])) //if the second one is the number
                         {
-                            nameStr = args[0];//then the first one is the name and the second input is the age
-                            ageStr = args[1];
+                            nameStr = information[0];//then the first one is the name and the second input is the age
+                            ageStr = information[1];
                         }
                         else
                         {
-                            throw new ArgumentException(String.Format("Neiter {0} or {1} are numbers", args[0], args[1]));
+                            throw new ArgumentException(String.Format("Neiter {0} or {1} are numbers", information[0], information[1]));
                         }
                         break;
                     }
                 default:
+
                     throw new ArgumentException(String.Format("Wrong number of Errors"));
             }
 
@@ -106,7 +130,7 @@ namespace HelloConsole
                 Console.Write("Enter your Age: ");
                 ageStr = Console.ReadLine();
                 ageCaptured = IsNum(ageStr);
-                if (!ageCaptured ) //don't use < 0, !ageCaptured on the other hand, makes sure there's a result in IsNum
+                if (!ageCaptured) //don't use < 0, !ageCaptured on the other hand, makes sure there's a result in IsNum
                 {
                     Console.WriteLine("Invalid Age");
                 }
@@ -140,3 +164,19 @@ namespace HelloConsole
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
